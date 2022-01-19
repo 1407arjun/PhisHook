@@ -10,6 +10,9 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.TextView;
+
 import androidx.appcompat.widget.Toolbar;
 
 import java.util.ArrayList;
@@ -17,19 +20,20 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private static final int READ_SMS_REQUEST_CODE = 100;
-    private ArrayList<String> messages = new ArrayList<>();
+    private ArrayList<Message> messages = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED)
             ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.READ_SMS}, READ_SMS_REQUEST_CODE);
         else
             getMessages();
+
+        TextView countText = findViewById(R.id.countText);
+        countText.setText(messages.size() + " message(s)");
     }
 
     @Override
@@ -48,14 +52,20 @@ public class MainActivity extends AppCompatActivity {
 
         if (cursor.moveToFirst()) {
             do {
-                StringBuilder msgData = new StringBuilder();
+                Message message = new Message();
                 for(int i = 0; i < cursor.getColumnCount(); i++) {
-                    msgData.append(" ").append(cursor.getColumnName(i)).append(":").append(cursor.getString(i));
+                    if (cursor.getColumnName(i).equals("address"))
+                        message.setAddress(cursor.getString(i));
+                    if (cursor.getColumnName(i).equals("date"))
+                        message.setDate(Integer.parseInt(cursor.getString(i)));
+                    if (cursor.getColumnName(i).equals("body"))
+                        message.setBody(cursor.getString(i));
                 }
-                messages.add(msgData.toString());
+                messages.add(message);
             } while (cursor.moveToNext());
         }
 
         cursor.close();
+        Log.i("smshello", messages.toString());
     }
 }
