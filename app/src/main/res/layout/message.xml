@@ -2,6 +2,7 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -22,6 +23,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:layout_marginEnd="8dp"
                 android:layout_weight="1"
                 android:text="TextView"
                 android:textSize="20sp"
@@ -32,6 +34,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical|end"
+                android:layout_marginStart="8dp"
                 android:layout_weight="1"
                 android:text="TextView"
                 android:textAlignment="textEnd" />
@@ -45,10 +48,11 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/messageText"
+                android:id="@+id/bodyText"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
+                android:layout_marginEnd="8dp"
                 android:layout_weight="1"
                 android:text="TextView"
                 android:textSize="16sp" />
@@ -59,7 +63,7 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_gravity="center_vertical"
-                android:layout_margin="2dp"
+                android:layout_margin="8dp"
                 android:pointerIcon="top_right_diagonal_double_arrow"
                 android:textAllCaps="false"
                 android:textColor="@color/design_default_color_error"
@@ -77,11 +81,13 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/resultLayout"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="4dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -94,10 +100,12 @@
                     android:id="@+id/phishingIndicator"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center" />
+                    android:layout_gravity="center"
+                    android:progress="50"
+                    app:indicatorColor="@android:color/holo_red_light" />
 
                 <TextView
-                    android:id="@+id/textView5"
+                    android:id="@+id/phishingText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -118,10 +126,12 @@
                     android:id="@+id/spamIndicator"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center" />
+                    android:layout_gravity="center"
+                    android:progress="50"
+                    app:indicatorColor="@android:color/holo_orange_light" />
 
                 <TextView
-                    android:id="@+id/textView6"
+                    android:id="@+id/spamText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
