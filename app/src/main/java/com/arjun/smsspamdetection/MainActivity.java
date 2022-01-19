@@ -13,7 +13,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 
-import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
@@ -34,6 +35,12 @@ public class MainActivity extends AppCompatActivity {
 
         TextView countText = findViewById(R.id.countText);
         countText.setText(messages.size() + " message(s)");
+
+        RecyclerView messageView = findViewById(R.id.messageView);
+        MessageAdapter adapter = new MessageAdapter(messages, this);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        messageView.setLayoutManager(layoutManager);
+        messageView.setAdapter(adapter);
     }
 
     @Override
@@ -57,7 +64,8 @@ public class MainActivity extends AppCompatActivity {
                     if (cursor.getColumnName(i).equals("address"))
                         message.setAddress(cursor.getString(i));
                     if (cursor.getColumnName(i).equals("date"))
-                        message.setDate(Integer.parseInt(cursor.getString(i)));
+                        //Log.i("smshellodate", cursor.getString(i));
+                        message.setDate(cursor.getInt(i));
                     if (cursor.getColumnName(i).equals("body"))
                         message.setBody(cursor.getString(i));
                 }

@@ -77,7 +77,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.Recycler
             }
         });
 
-        Retrofit retrofit = new Retrofit.Builder()
+        /*Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(API.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
@@ -123,7 +123,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.Recycler
                 holder.spamText.setVisibility(View.GONE);
                 holder.spamIndicator.setVisibility(View.GONE);
             }
-        });
+        });*/
     }
 
     @Override
