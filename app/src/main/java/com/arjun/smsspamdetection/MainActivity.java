@@ -6,11 +6,11 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,10 +18,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final int READ_SMS_REQUEST_CODE = 100;
     private ArrayList<Message> messages = new ArrayList<>();
+    int count = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +62,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getMessages() {
-        Cursor cursor = getContentResolver().query(Uri.parse("content://sms/inbox"), null, null, null, null);
+        ProgressDialog progress = new ProgressDialog(this);
+        progress.setMessage("Retrieving data");
+        progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progress.setIndeterminate(true);
+        progress.setCancelable(false);
+        progress.show();
+
+        Cursor cursor = getContentResolver().query(Uri.parse("content://sms/inbox"), new String[] {"address", "date", "body"}, null, null, null);
 
         if (cursor.moveToFirst()) {
             do {
@@ -64,8 +78,7 @@ public class MainActivity extends AppCompatActivity {
                     if (cursor.getColumnName(i).equals("address"))
                         message.setAddress(cursor.getString(i));
                     if (cursor.getColumnName(i).equals("date"))
-                        //Log.i("smshellodate", cursor.getString(i));
-                        message.setDate(cursor.getInt(i));
+                        message.setDate(Long.parseLong(cursor.getString(i)));
                     if (cursor.getColumnName(i).equals("body"))
                         message.setBody(cursor.getString(i));
                 }
@@ -74,6 +87,38 @@ public class MainActivity extends AppCompatActivity {
         }
 
         cursor.close();
-        Log.i("smshello", messages.toString());
+
+        for (Message message: messages) {
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(API.BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+            API api = retrofit.create(API.class);
+
+            Call<Result> call = api.getResult(message.getBody());
+            call.enqueue(new Callback<Result>() {
+                @Override
+                public void onResponse(Call<Result> call, Response<Result> response) {
+                    Result result = response.body();
+                    assert result != null;
+
+                    message.setPhishing(result.getPhish());
+                    message.setSpam(result.getSpam());
+
+                    count++;
+                    if (count == messages.size())
+                        progress.dismiss();
+                }
+                @Override
+                public void onFailure(Call<Result> call, Throwable t) {
+                    message.setPhishing(-1);
+                    message.setSpam(-1);
+
+                    count++;
+                    if (count == messages.size())
+                        progress.dismiss();
+                }
+            });
+        }
     }
 }

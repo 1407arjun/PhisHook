@@ -67,63 +67,45 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.Recycler
         holder.dateText.setText(message.getDate());
         holder.bodyText.setText(message.getBody());
 
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (holder.resultLayout.getVisibility() == View.GONE)
-                    holder.resultLayout.setVisibility(View.VISIBLE);
-                else
-                    holder.resultLayout.setVisibility(View.GONE);
-            }
+        holder.cardView.setOnClickListener(v -> {
+            if (holder.resultLayout.getVisibility() == View.GONE)
+                holder.resultLayout.setVisibility(View.VISIBLE);
+            else
+                holder.resultLayout.setVisibility(View.GONE);
         });
 
-        /*Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(API.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        API api = retrofit.create(API.class);
-
-        Call<Result> call = api.getResult(message.getBody());
-        call.enqueue(new Callback<Result>() {
-            @Override
-            public void onResponse(Call<Result> call, Response<Result> response) {
-                Result result = response.body();
-                assert result != null;
-
-                if (result.getPhish() >= 60) {
-                    holder.phishingText.setTextColor(context.getColor(android.R.color.holo_red_light));
-                    holder.phishingIndicator.setIndicatorColor(context.getColor(android.R.color.holo_red_light));
-                } else if (result.getPhish() < 60 && result.getPhish() >= 30 ) {
-                    holder.phishingText.setTextColor(context.getColor(android.R.color.holo_orange_light));
-                    holder.phishingIndicator.setIndicatorColor(context.getColor(android.R.color.holo_orange_light));
-                } else {
-                    holder.phishingText.setTextColor(context.getColor(android.R.color.holo_green_light));
-                    holder.phishingIndicator.setIndicatorColor(context.getColor(android.R.color.holo_green_light));
-                }
-                holder.phishingText.setText(result.getPhish() + "% Phishing");
-                holder.phishingIndicator.setProgress(result.getPhish(), true);
-
-                if (result.getSpam() >= 60) {
-                    holder.spamText.setTextColor(context.getColor(android.R.color.holo_red_light));
-                    holder.spamIndicator.setIndicatorColor(context.getColor(android.R.color.holo_red_light));
-                } else if (result.getSpam() < 60 && result.getSpam() >= 30 ) {
-                    holder.spamText.setTextColor(context.getColor(android.R.color.holo_orange_light));
-                    holder.spamIndicator.setIndicatorColor(context.getColor(android.R.color.holo_orange_light));
-                } else {
-                    holder.spamText.setTextColor(context.getColor(android.R.color.holo_green_light));
-                    holder.spamIndicator.setIndicatorColor(context.getColor(android.R.color.holo_green_light));
-                }
-                holder.spamText.setText(result.getSpam() + "% Spam");
-                holder.spamIndicator.setProgress(result.getSpam(), true);
+        if (message.getPhishing() != -1 && message.getSpam() != -1) {
+            if (message.getPhishing() >= 60) {
+                holder.phishingText.setTextColor(context.getColor(android.R.color.holo_red_light));
+                holder.phishingIndicator.setIndicatorColor(context.getColor(android.R.color.holo_red_light));
+            } else if (message.getPhishing() < 60 && message.getPhishing() >= 30) {
+                holder.phishingText.setTextColor(context.getColor(android.R.color.holo_orange_light));
+                holder.phishingIndicator.setIndicatorColor(context.getColor(android.R.color.holo_orange_light));
+            } else {
+                holder.phishingText.setTextColor(context.getColor(android.R.color.holo_green_light));
+                holder.phishingIndicator.setIndicatorColor(context.getColor(android.R.color.holo_green_light));
             }
-            @Override
-            public void onFailure(Call<Result> call, Throwable t) {
-                holder.phishingText.setVisibility(View.GONE);
-                holder.phishingIndicator.setVisibility(View.GONE);
-                holder.spamText.setVisibility(View.GONE);
-                holder.spamIndicator.setVisibility(View.GONE);
+            holder.phishingText.setText(message.getPhishing() + "% Phishing");
+            holder.phishingIndicator.setProgress(message.getPhishing(), true);
+
+            if (message.getSpam() >= 60) {
+                holder.spamText.setTextColor(context.getColor(android.R.color.holo_red_light));
+                holder.spamIndicator.setIndicatorColor(context.getColor(android.R.color.holo_red_light));
+            } else if (message.getSpam() < 60 && message.getSpam() >= 30) {
+                holder.spamText.setTextColor(context.getColor(android.R.color.holo_orange_light));
+                holder.spamIndicator.setIndicatorColor(context.getColor(android.R.color.holo_orange_light));
+            } else {
+                holder.spamText.setTextColor(context.getColor(android.R.color.holo_green_light));
+                holder.spamIndicator.setIndicatorColor(context.getColor(android.R.color.holo_green_light));
             }
-        });*/
+            holder.spamText.setText(message.getSpam() + "% Spam");
+            holder.spamIndicator.setProgress(message.getSpam(), true);
+        } else {
+            holder.phishingText.setVisibility(View.GONE);
+            holder.phishingIndicator.setVisibility(View.GONE);
+            holder.spamText.setVisibility(View.GONE);
+            holder.spamIndicator.setVisibility(View.GONE);
+        }
     }
 
     @Override
