@@ -1,10 +1,5 @@
 package com.arjun.smsspamdetection;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.pm.PackageManager;
@@ -13,16 +8,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,8 +31,13 @@ public class MainActivity extends AppCompatActivity {
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED)
             ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.READ_SMS}, READ_SMS_REQUEST_CODE);
-        else
-            getMessages();
+        else {
+            try {
+                getMessages();
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
 
         TextView countText = findViewById(R.id.countText);
         countText.setText(messages.size() + " message(s)");
@@ -56,22 +55,26 @@ public class MainActivity extends AppCompatActivity {
 
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) == PackageManager.PERMISSION_GRANTED) {
-                getMessages();
+                try {
+                    getMessages();
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
 
-    private void getMessages() {
+    private void getMessages() throws UnsupportedEncodingException {
         ProgressDialog progress = new ProgressDialog(this);
-        progress.setMessage("Retrieving data");
-        progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progress.setIndeterminate(true);
+        progress.setMessage("Scanning messages...");
+        progress.setIndeterminate(false);
+        progress.setProgress(0);
         progress.setCancelable(false);
         progress.show();
 
         Cursor cursor = getContentResolver().query(Uri.parse("content://sms/inbox"), new String[] {"address", "date", "body"}, null, null, null);
-
         if (cursor.moveToFirst()) {
+            count = 0;
             do {
                 Message message = new Message();
                 for(int i = 0; i < cursor.getColumnCount(); i++) {
@@ -83,42 +86,10 @@ public class MainActivity extends AppCompatActivity {
                         message.setBody(cursor.getString(i));
                 }
                 messages.add(message);
-            } while (cursor.moveToNext());
+                count++;
+            } while (cursor.moveToNext() && count < 20);
         }
 
         cursor.close();
-
-        for (Message message: messages) {
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl(API.BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-            API api = retrofit.create(API.class);
-
-            Call<Result> call = api.getResult(message.getBody());
-            call.enqueue(new Callback<Result>() {
-                @Override
-                public void onResponse(Call<Result> call, Response<Result> response) {
-                    Result result = response.body();
-                    assert result != null;
-
-                    message.setPhishing(result.getPhish());
-                    message.setSpam(result.getSpam());
-
-                    count++;
-                    if (count == messages.size())
-                        progress.dismiss();
-                }
-                @Override
-                public void onFailure(Call<Result> call, Throwable t) {
-                    message.setPhishing(-1);
-                    message.setSpam(-1);
-
-                    count++;
-                    if (count == messages.size())
-                        progress.dismiss();
-                }
-            });
-        }
     }
 }

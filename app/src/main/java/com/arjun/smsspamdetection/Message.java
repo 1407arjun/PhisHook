@@ -1,8 +1,5 @@
 package com.arjun.smsspamdetection;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -10,8 +7,7 @@ public class Message {
     private String address;
     private String date;
     private String body;
-    private int phishing;
-    private int spam;
+    private String result;
 
     public Message() {
 
@@ -44,19 +40,11 @@ public class Message {
         this.body = body;
     }
 
-    public int getPhishing() {
-        return phishing;
+    public String getResult() {
+        return result;
     }
 
-    public void setPhishing(int phishing) {
-        this.phishing = phishing;
-    }
-
-    public int getSpam() {
-        return spam;
-    }
-
-    public void setSpam(int spam) {
-        this.spam = spam;
+    public void setResult(String result) {
+        this.result = result;
     }
 }
