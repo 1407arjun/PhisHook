@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import androidx.appcompat.widget.Toolbar;
 
 import java.util.ArrayList;
 
@@ -22,6 +23,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED)
             ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.READ_SMS}, READ_SMS_REQUEST_CODE);
@@ -46,8 +49,8 @@ public class MainActivity extends AppCompatActivity {
         if (cursor.moveToFirst()) {
             do {
                 StringBuilder msgData = new StringBuilder();
-                for(int idx=0; idx < cursor.getColumnCount(); idx++) {
-                    msgData.append(" ").append(cursor.getColumnName(idx)).append(":").append(cursor.getString(idx));
+                for(int i = 0; i < cursor.getColumnCount(); i++) {
+                    msgData.append(" ").append(cursor.getColumnName(i)).append(":").append(cursor.getString(i));
                 }
                 messages.add(msgData.toString());
             } while (cursor.moveToNext());
