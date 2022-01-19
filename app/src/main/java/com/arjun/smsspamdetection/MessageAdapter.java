@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -34,6 +35,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.Recycler
 
         private final TextView addressText, dateText, bodyText;
         private final MaterialCardView cardView;
+        private final Button reportButton;
 
         public RecyclerViewHolder(@NonNull View view) {
             super(view);
@@ -42,6 +44,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.Recycler
             dateText = view.findViewById(R.id.dateText);
             bodyText = view.findViewById(R.id.bodyText);
             cardView = view.findViewById(R.id.cardView);
+            reportButton = view.findViewById(R.id.reportButton);
         }
     }
 
@@ -53,12 +56,17 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.Recycler
         holder.bodyText.setText(message.getBody());
 
         if (message.getResult() != null) {
-            if (message.getResult().equals("Safe"))
+            if (message.getResult().equals("Safe")) {
                 holder.cardView.setStrokeColor(context.getColor(android.R.color.holo_green_light));
-            else
+                holder.reportButton.setVisibility(View.GONE);
+            } else {
                 holder.cardView.setStrokeColor(context.getColor(android.R.color.holo_red_light));
-        } else
+                holder.reportButton.setVisibility(View.VISIBLE);
+            }
+        } else {
             holder.cardView.setStrokeColor(context.getColor(android.R.color.transparent));
+            holder.reportButton.setVisibility(View.VISIBLE);
+       }
     }
 
     @Override
