@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,7 +16,18 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonObjectRequest;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -67,8 +79,6 @@ public class MainActivity extends AppCompatActivity {
     private void getMessages() throws UnsupportedEncodingException {
         ProgressDialog progress = new ProgressDialog(this);
         progress.setMessage("Scanning messages...");
-        progress.setIndeterminate(false);
-        progress.setProgress(0);
         progress.setCancelable(false);
         progress.show();
 
@@ -91,5 +101,45 @@ public class MainActivity extends AppCompatActivity {
         }
 
         cursor.close();
+
+        RequestQueue queue = SingletonRequestQueue.getInstance(this).getRequestQueue();
+        VolleyLog.DEBUG = true;
+        String BASE_URL = "https://phishing-and-spam-detection.herokuapp.com/predict";
+
+        count = 0;
+        for (Message message: messages) {
+            try {
+                String urlEncoder = URLEncoder.encode(message.getBody(), "UTF-8");
+                JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET,
+                        BASE_URL + "?message=" + urlEncoder, null,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                if (response != null) {
+                                    try {
+                                        Log.i("hellores", response.toString());
+                                        message.setResult(response.getString("result"));
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                                count++;
+                                if (count == messages.size())
+                                    progress.dismiss();
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("Volley Error", error.getMessage() != null ? error.getMessage() : "Error");
+                        count++;
+                        if (count == messages.size())
+                            progress.dismiss();
+                    }
+                });
+                queue.add(request);
+            } catch (UnsupportedEncodingException ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 }
