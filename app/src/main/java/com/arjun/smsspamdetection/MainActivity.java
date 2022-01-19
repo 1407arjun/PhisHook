@@ -35,11 +35,18 @@ public class MainActivity extends AppCompatActivity {
     private static final int READ_SMS_REQUEST_CODE = 100;
     private ArrayList<Message> messages = new ArrayList<>();
     int count = 0;
+    MessageAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        RecyclerView messageView = findViewById(R.id.messageView);
+        adapter = new MessageAdapter(messages, this);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        messageView.setLayoutManager(layoutManager);
+        messageView.setAdapter(adapter);
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED)
             ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.READ_SMS}, READ_SMS_REQUEST_CODE);
@@ -53,12 +60,6 @@ public class MainActivity extends AppCompatActivity {
 
         TextView countText = findViewById(R.id.countText);
         countText.setText(messages.size() + " message(s)");
-
-        RecyclerView messageView = findViewById(R.id.messageView);
-        MessageAdapter adapter = new MessageAdapter(messages, this);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        messageView.setLayoutManager(layoutManager);
-        messageView.setAdapter(adapter);
     }
 
     @Override
@@ -124,16 +125,20 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                 }
                                 count++;
-                                if (count == messages.size())
+                                if (count == messages.size()) {
                                     progress.dismiss();
+                                    adapter.notifyDataSetChanged();
+                                }
                             }
                         }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.d("Volley Error", error.getMessage() != null ? error.getMessage() : "Error");
                         count++;
-                        if (count == messages.size())
+                        if (count == messages.size()) {
                             progress.dismiss();
+                            adapter.notifyDataSetChanged();
+                        }
                     }
                 });
                 queue.add(request);
