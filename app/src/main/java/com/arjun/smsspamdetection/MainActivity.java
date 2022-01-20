@@ -15,6 +15,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Message> messages = new ArrayList<>();
     int count = 0;
     MessageAdapter adapter;
+    SwipeRefreshLayout refreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +62,18 @@ public class MainActivity extends AppCompatActivity {
 
         TextView countText = findViewById(R.id.countText);
         countText.setText(messages.size() + " message(s)");
+
+        refreshLayout = findViewById(R.id.refreshLayout);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                try {
+                    getMessages();
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     @Override
@@ -128,6 +142,7 @@ public class MainActivity extends AppCompatActivity {
                                 if (count == messages.size()) {
                                     progress.dismiss();
                                     adapter.notifyDataSetChanged();
+                                    refreshLayout.setRefreshing(false);
                                 }
                             }
                         }, new Response.ErrorListener() {
@@ -138,6 +153,8 @@ public class MainActivity extends AppCompatActivity {
                         if (count == messages.size()) {
                             progress.dismiss();
                             adapter.notifyDataSetChanged();
+                            refreshLayout.setRefreshing(false);
+
                         }
                     }
                 });
