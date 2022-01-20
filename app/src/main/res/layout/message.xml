@@ -65,31 +65,65 @@
                 android:text="TextView"
                 android:textSize="16sp" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/reportButton"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical|end"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="2dp"
-                android:layout_marginBottom="8dp"
-                android:pointerIcon="top_right_diagonal_double_arrow"
-                android:textAllCaps="false"
-                android:textColor="@color/design_default_color_error"
-                android:textSize="10sp"
-                android:textStyle="bold"
-                app:backgroundTint="@color/design_default_color_error"
-                app:cornerRadius="16dp"
-                app:icon="@drawable/ic_report"
-                app:iconGravity="textEnd"
-                app:iconPadding="0dp"
-                app:iconTint="@color/white"
-                app:rippleColor="@color/white"
-                app:strokeColor="@color/design_default_color_error"
-                app:strokeWidth="2dp"
-                tools:ignore="SpeakableTextPresentCheck" />
+                android:orientation="vertical">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/reportButton"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center_vertical|end"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="2dp"
+                    android:layout_marginBottom="4dp"
+                    android:pointerIcon="top_right_diagonal_double_arrow"
+                    android:textAllCaps="false"
+                    android:textColor="@color/design_default_color_error"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="@color/design_default_color_error"
+                    app:cornerRadius="16dp"
+                    app:icon="@drawable/ic_report"
+                    app:iconGravity="textEnd"
+                    app:iconPadding="0dp"
+                    app:iconTint="@color/white"
+                    app:rippleColor="@color/white"
+                    app:strokeColor="@color/design_default_color_error"
+                    app:strokeWidth="2dp"
+                    tools:ignore="SpeakableTextPresentCheck" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/unreportButton"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center_vertical|end"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="2dp"
+                    android:layout_marginBottom="4dp"
+                    android:pointerIcon="top_right_diagonal_double_arrow"
+                    android:textAllCaps="false"
+                    android:textColor="@color/design_default_color_error"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="@android:color/holo_green_dark"
+                    app:cornerRadius="16dp"
+                    app:icon="@drawable/ic_unreport"
+                    app:iconGravity="textEnd"
+                    app:iconPadding="0dp"
+                    app:iconTint="@color/white"
+                    app:rippleColor="@color/white"
+                    app:strokeColor="@android:color/holo_green_dark"
+                    app:strokeWidth="2dp"
+                    tools:ignore="SpeakableTextPresentCheck" />
+            </LinearLayout>
+
         </LinearLayout>
 
     </LinearLayout>
