@@ -1,4 +1,4 @@
-package com.arjun.smsspamdetection;
+package com.arjun.phishook;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

@@ -1,4 +1,4 @@
-package com.arjun.smsspamdetection;
+package com.arjun.phishook;
 
 import android.Manifest;
 import android.app.ProgressDialog;

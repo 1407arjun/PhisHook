@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.SMSSpamDetection" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.PhisHook" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">#072F5F</item>
         <item name="colorPrimaryVariant">@color/cardview_dark_background</item>

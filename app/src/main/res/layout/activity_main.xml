@@ -32,7 +32,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="1dp"
-                android:text="Phishing and Spam Detection"
+                android:text="PhisHook"
                 android:textAlignment="center"
                 android:textColor="@android:color/primary_text_dark"
                 android:textSize="20sp"

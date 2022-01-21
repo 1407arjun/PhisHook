@@ -1,4 +1,4 @@
-package com.arjun.smsspamdetection;
+package com.arjun.phishook;
 
 import android.content.Context;
 
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("com.arjun.smsspamdetection", appContext.getPackageName());
+        assertEquals("com.arjun.phishook", appContext.getPackageName());
     }
 }
