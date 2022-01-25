@@ -3,6 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/arjun/AndroidStudioProjects/PhisHook/app/src/main/res/layout/activity_main.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/arjun/AndroidStudioProjects/PhisHook/app/src/main/res/layout/activity_splash.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/arjun/AndroidStudioProjects/PhisHook/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.2703125" />
         <entry key="..\:/Users/arjun/AndroidStudioProjects/SMSSpamDetection/app/src/main/res/drawable-anydpi/ic_report.xml" value="0.2703125" />
         <entry key="..\:/Users/arjun/AndroidStudioProjects/SMSSpamDetection/app/src/main/res/drawable-anydpi/ic_unreport.xml" value="0.2703125" />
         <entry key="..\:/Users/arjun/AndroidStudioProjects/SMSSpamDetection/app/src/main/res/layout/activity_main.xml" value="0.4" />

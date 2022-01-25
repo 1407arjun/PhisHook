@@ -1,21 +1,21 @@
 package com.arjun.phishook;
 
-import android.Manifest;
-import android.app.ProgressDialog;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.Bundle;
-import android.util.Log;
-import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -31,46 +31,54 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class SplashActivity extends AppCompatActivity {
 
     private static final int READ_SMS_REQUEST_CODE = 100;
     private ArrayList<Message> messages = new ArrayList<>();
     int count = 0;
-    MessageAdapter adapter;
-    SwipeRefreshLayout refreshLayout;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_splash);
 
-        RecyclerView messageView = findViewById(R.id.messageView);
-        adapter = new MessageAdapter(ConstantsActivity.getMessages(), this);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        messageView.setLayoutManager(layoutManager);
-        messageView.setAdapter(adapter);
+        progressBar = findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.INVISIBLE);
+        progressBar.setIndeterminate(true);
 
-        TextView countText = findViewById(R.id.countText);
-        countText.setText(ConstantsActivity.getMessages().size() + " message(s)");
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED)
+            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.READ_SMS}, READ_SMS_REQUEST_CODE);
+        else {
+            try {
+                progressBar.setVisibility(View.VISIBLE);
+                getMessages();
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
-        refreshLayout = findViewById(R.id.refreshLayout);
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) == PackageManager.PERMISSION_GRANTED) {
                 try {
+                    progressBar.setVisibility(View.VISIBLE);
                     getMessages();
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
             }
-        });
+        } else {
+            Toast.makeText(this, "Permission to read SMS required to continue!", Toast.LENGTH_LONG).show();
+            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.READ_SMS}, READ_SMS_REQUEST_CODE);
+        }
     }
 
     private void getMessages() throws UnsupportedEncodingException {
-        ProgressDialog progress = new ProgressDialog(this);
-        progress.setMessage("Scanning messages...Please wait");
-        progress.setCancelable(false);
-        progress.show();
 
         Cursor cursor = getContentResolver().query(Uri.parse("content://sms/inbox"), new String[] {"address", "date", "body"}, null, null, null);
         if (cursor.moveToFirst()) {
@@ -116,9 +124,9 @@ public class MainActivity extends AppCompatActivity {
                                 count++;
                                 if (count == messages.size()) {
                                     ConstantsActivity.setMessages(messages);
-                                    progress.dismiss();
-                                    adapter.notifyDataSetChanged();
-                                    refreshLayout.setRefreshing(false);
+                                    progressBar.setVisibility(View.INVISIBLE);
+                                    startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                                    finish();
                                 }
                             }
                         }, new Response.ErrorListener() {
@@ -128,9 +136,9 @@ public class MainActivity extends AppCompatActivity {
                         count++;
                         if (count == messages.size()) {
                             ConstantsActivity.setMessages(messages);
-                            progress.dismiss();
-                            adapter.notifyDataSetChanged();
-                            refreshLayout.setRefreshing(false);
+                            progressBar.setVisibility(View.INVISIBLE);
+                            startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                            finish();
 
                         }
                     }
